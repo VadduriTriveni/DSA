@@ -2,58 +2,48 @@
 =================================================================================================
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> res = new HashMap<>();
 
-        HashMap<String,List<String> > hm =new HashMap<>();
-        for(String str : strs)
-        {  
-            char[] ch  = str.toCharArray();
-            Arrays.sort(ch);
-            String sort = new String (ch);
-            if(! hm.containsKey(sort))
-            {
-                hm.put(sort, new ArrayList<>());
+        for (String s : strs) {
+            int[] count = new int[26];
+
+            for (char c : s.toCharArray()) {
+                count[c - 'a']++;
             }
 
-            hm.get(sort).add(str);
-
-        }
-         return new ArrayList<> (hm.values());
-    }
-}
-------------------------------------------------------------------------------------------------------
-  class Solution {
-    public List<List<String>> groupAnagrams(String[] strs) {
-        
-        if(strs.length == 0){
-            return new ArrayList();
-        }
-        
-        Map<String, List> ansMap = new HashMap<>();
-        
-        int[] count = new int[26];
-        
-        for(String s:strs){
-            Arrays.fill(count, 0);
-            for(char c:s.toCharArray()){
-                count[c-'a']++;
-            }
-            
-            StringBuilder sb = new StringBuilder("");
-            
-            for(int i=0; i<26; i++){
-                sb.append("#");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 26; i++) {
+                sb.append('#');
                 sb.append(count[i]);
             }
             String key = sb.toString();
-            if(!ansMap.containsKey(key)){
-                ansMap.put(key,new ArrayList());
-                
-            }
-            ansMap.get(key).add(s);
             
+            if (!res.containsKey(key)) {
+                res.put(key, new ArrayList<>());
+            }
+            res.get(key).add(s);
+        }
+
+        return new ArrayList<>(res.values());
+    }
+}
+-------------------------------------------------------------------------
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        
+        for (String word : strs) {
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String sortedWord = new String(chars);
+            
+            if (!map.containsKey(sortedWord)) {
+                map.put(sortedWord, new ArrayList<>());
+            }
+            
+            map.get(sortedWord).add(word);
         }
         
-        return new ArrayList(ansMap.values());
-        
+        return new ArrayList<>(map.values());
     }
 }
