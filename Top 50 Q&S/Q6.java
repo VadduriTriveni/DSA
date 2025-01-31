@@ -1,82 +1,75 @@
 36. Valid Sudoku
 ===========================================================================================
 class Solution {
+
     public boolean isValidSudoku(char[][] board) {
-        // Use hash sets to track seen numbers
-        HashSet<String> seen = new HashSet<>();
+        //neetcode solution, slightly modified
 
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                char val = board[r][c];
+        //a set of the characters that we have already come across (excluding '.' which denotes an empty space)
+        Set<Character> rowSet = null;
+        Set<Character> colSet = null;
 
-                // Skip empty cells
-                if (val == '.') {
-                    continue;
+
+        for (int i = 0; i < 9; i++) {
+            //reinitialize the sets so we don't carry over found characters from the previous run
+            rowSet = new HashSet<>();
+            colSet = new HashSet<>();
+            for (int j = 0; j < 9; j++) {
+                char r = board[i][j];
+                char c = board[j][i];
+                if (r != '.'){
+                    if (rowSet.contains(r)){
+                        return false;
+                    } else {
+                        rowSet.add(r);
+                    }
                 }
-
-                // Create unique keys for rows, columns, and boxes
-                String rowKey = "row" + r + val;
-                String colKey = "col" + c + val;
-                String boxKey = "box" + (r / 3) + (c / 3) + val;
-
-                // Check if the value has already been seen
-                if (seen.contains(rowKey) || seen.contains(colKey) || seen.contains(boxKey)) {
-                    return false;
+                if (c != '.'){
+                    if (colSet.contains(c)){
+                        return false;
+                    } else {
+                        colSet.add(c);
+                    }
                 }
-
-                // Add the keys to the set
-                seen.add(rowKey);
-                seen.add(colKey);
-                seen.add(boxKey);
             }
         }
+
+        //block
+        //loop controls advance by 3 each time to jump through the boxes
+        for (int i = 0; i < 9; i = i + 3) {
+            for (int j = 0; j < 9; j = j + 3) {
+                //checkBlock will return true if valid
+                if (!checkBlock(i, j, board)) {
+                    return false;
+                }
+            }
+        }
+        //passed all tests, therefore valid board
         return true;
     }
-}
--------------------------------------------------------------------------------------------------
-class Solution {
-    public boolean isValidSudoku(char[][] board) {
-        int N = 9;
 
-        // Use hash set to record the status
-        HashSet<Character>[] rows = new HashSet[N];
-        HashSet<Character>[] cols = new HashSet[N];
-        HashSet<Character>[] boxes = new HashSet[N];
-        for (int r = 0; r < N; r++) {
-            rows[r] = new HashSet<Character>();
-            cols[r] = new HashSet<Character>();
-            boxes[r] = new HashSet<Character>();
-        }
-
-        for (int r = 0; r < N; r++) {
-            for (int c = 0; c < N; c++) {
-                char val = board[r][c];
-
-                // Check if the position is filled with number
-                if (val == '.') {
+    public boolean checkBlock(int idxI, int idxJ, char[][] board) {
+        Set<Character> blockSet = new HashSet<>();
+        //if idxI = 3 and indJ = 0
+        //rows = 6 and cols = 3
+        int rows = idxI + 3;
+        int cols = idxJ + 3;
+        //and because i initializes to idxI but only goes to rows, we loop 3 times (once for each row)
+        for (int i = idxI; i < rows; i++) {
+            //same for columns
+            for (int j = idxJ; j < cols; j++) {
+                if (board[i][j] == '.') {
                     continue;
                 }
-
-                // Check the row
-                if (rows[r].contains(val)) {
+                
+                if (blockSet.contains(board[i][j])) {
                     return false;
                 }
-                rows[r].add(val);
 
-                // Check the column
-                if (cols[c].contains(val)) {
-                    return false;
-                }
-                cols[c].add(val);
-
-                // Check the box
-                int idx = (r / 3) * 3 + c / 3;
-                if (boxes[idx].contains(val)) {
-                    return false;
-                }
-                boxes[idx].add(val);
+                blockSet.add(board[i][j]);
             }
         }
+
         return true;
     }
 }
