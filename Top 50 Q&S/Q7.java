@@ -1,24 +1,36 @@
 238. Product of Array Except Self
 ===========================================================================================
- class Solution {
+//Just store the left and right product (Try doing this with extra space first)
+//This one is constant space because we are returning the array we created
+//In first pass calculate the left product except self and in second calculate the right
+
+class Solution {
+
     public int[] productExceptSelf(int[] nums) {
-        int n = nums.length;
-        int[] result = new int[n];
-
-        // Step 1: Calculate prefix products
-        int prefix = 1;
-        for (int i = 0; i < n; i++) {
-            result[i] = prefix; // Store the prefix product in result
-            prefix *= nums[i];   // Update the prefix product
+        int[] arr = new int[nums.length];
+        int right = 1, left = 1;
+        for (int i = 0; i < nums.length; i++) {
+            arr[i] = left;
+            left *= nums[i];
         }
-
-        // Step 2: Calculate suffix products and multiply with prefix products
-        int suffix = 1;
-        for (int i = n - 1; i >= 0; i--) {
-            result[i] *= suffix; // Multiply with the suffix product
-            suffix *= nums[i];    // Update the suffix product
+        for (int i = nums.length - 1; i >= 0; i--) {
+            arr[i] *= right;
+            right *= nums[i];
         }
+        return arr;
+    }
 
-        return result;
+    public int[] productExceptSelfNumsAsPrefix(int[] nums) {
+        int[] output = new int[nums.length];
+        output[0] = 1;
+
+        for (int i = 0; i < nums.length - 1; i++) output[i + 1] =
+            output[i] * nums[i];
+
+        for (int i = nums.length - 2; i >= 0; i--) {
+            output[i] = nums[i + 1] * output[i];
+            nums[i] = nums[i] * nums[i + 1];
+        }
+        return output;
     }
 }
