@@ -1,24 +1,31 @@
 125. Valid Palindrome
 ==========================================================================================
-  class Solution {
-    public boolean isPalindrome(String s) {
+ public boolean isPalindrome(String s) {
         
-        int left = 0;
-        int right = s.length() - 1;
+    int i = 0;
+    int j = s.length() - 1;
+    while (i < j) {
         
-        while(left<right){
-            while(left<right && !Character.isLetterOrDigit(s.charAt(left))){
-                left++;
-            }
-            while(left<right && !Character.isLetterOrDigit(s.charAt(right))){
-                right--;
-            }
-            if(Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))){
-                return false;
-            }
-            left++;
-            right--;
+        Character start = s.charAt(i);
+        Character end = s.charAt(j);
+        
+        if (!Character.isLetterOrDigit(start)) {
+            i++;
+            continue;
         }
-        return true;
+        
+        if (!Character.isLetterOrDigit(end)) {
+            j--;
+            continue;
+        }
+        
+        if (Character.toLowerCase(start) != Character.toLowerCase(end)) {
+            return false;
+        }
+        
+        i++;
+        j--;    
     }
+    
+    return true;
 }
